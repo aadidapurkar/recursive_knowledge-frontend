@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,300..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+* {
+    font-family: "Tiktok Sans";
+}
+
+#btnExploreTopic {
+  text-align: center;
+  border: 1px solid black;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+#btnExploreTopic:hover {
+  background-color: black;
+  color: white;
+}
+
+#inputTopic {
+  width: 50%;
+  font-size: 1.5rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  justify-content: center; /* centers vertically if container has height */
+  align-items: center;     /* centers horizontally */
+  margin: 0 auto;          /* centers container itself in body */
+  margin-top: 1rem;
+}
