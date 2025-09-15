@@ -18,8 +18,14 @@ import { initialState } from "./state";
 import type { Action, State, Topic } from "./types";
 import { render } from "./render";
 
+// HTML Elements
+const inputTopic = document.getElementById("inputTopic")! as HTMLInputElement;
+const topicText = document.getElementsByClassName("topicText")[0]!;
+const btnExploreTopic = document.getElementById(
+  "btnExploreTopic"
+)! as HTMLButtonElement;
 
-// (CONTROLLER)Merged stream of controller observables, mapped to Actions
+// (CONTROLLER) Merged stream of controller observables, mapped to Actions
 const action$ = merge(newTopic$, exploreSubtopic$, decrementTopic$, incrementTopic$)
 
 // (MODEL) Reduced stream of State 
@@ -30,6 +36,9 @@ const state$ = action$.pipe(
 // (VIEW Update view every time state changes
 state$.subscribe((s) => render(s))
 
-//state$.subscribe(console.log)
+
+fromEvent(btnExploreTopic, "click").subscribe((_) => {
+  inputTopic.value = ""
+})
 
 

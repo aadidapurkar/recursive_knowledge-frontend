@@ -1,4 +1,5 @@
 import type { State, Topic } from "./types"
+import { shuffleArray } from "./util"
 
 // A function which takes a state and updates view as necessary
 export const render = (s : State) => {
@@ -22,11 +23,12 @@ export const render = (s : State) => {
     topicText.id = `${s.currTopic!}`
   }
 
-  // subtopics
+  // subtopics (andomly shuffle before displaying)
   if (topicChangeRequired) {
     subtopicContainer.innerHTML = '';
     const topic : Topic =  s.topics[s.currTopic!]
-    const subtopicElems = topic.subtopics.map((subtopic : string) => {
+    const shuffledTopics = shuffleArray<string>(topic.subtopics)
+    const subtopicElems = shuffledTopics.map((subtopic : string) => {
       const p = document.createElement('p');
       p.id = subtopic
       p.textContent = subtopic
