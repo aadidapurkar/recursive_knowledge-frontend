@@ -9,12 +9,25 @@ import {
   merge,
   Observable,
   of,
+  scan,
   switchMap,
 } from "rxjs"; // Creates Observables from single values or iterables
-import { updateGraph$, postRequest, createGraphRoot$ } from "./observable";
-import { DEFAULT_BRANCHING_FACTOR, LAYOUT_PARAMS, type TreeNode } from "./types";
+import {
+  postRequest,
+  getSubtree$,
+  inputRootTopic$,
+  inputNonRootTopic$,
+} from "./observable";
+import {
+  DEFAULT_BRANCHING_FACTOR,
+  LAYOUT_PARAMS,
+  type Action,
+  type State,
+  type TreeNode,
+} from "./types";
 import cytoscape from "cytoscape";
 import { parseRootTreeNodeAsCy } from "./util";
+import { AdjustGraph } from "./state";
 
 // HTML elements
 const inputTopic = document.getElementById("inputTopic") as HTMLInputElement;
@@ -49,11 +62,11 @@ const cy = cytoscape({
       selector: "edge",
       style: {
         width: 1,
-        "line-color": "#ccc",
-        "target-arrow-color": "#ccc",
+        "line-color": "#fff",
+        "target-arrow-color": "#fff",
         "target-arrow-shape": "triangle",
         "curve-style": "bezier",
-        "line-opacity": 0.2,
+        "line-opacity": 1,
       },
     },
   ],
@@ -65,27 +78,39 @@ const cy = cytoscape({
 });
 
 // Impure Rendering
-var root : any = null
+var root: any = null;
 
-//const actions$ = merge()
-createGraphRoot$.subscribe((a) => {
-  root = [a.value, a.url]
-  cy.elements().remove();
-  cy.add(parseRootTreeNodeAsCy(a));
-  // run a breadthfirst layout but with tighter spacing and label-aware sizing
-  const layout = cy.layout(LAYOUT_PARAMS);
-  layout.run();
-  cy.animate({
-    fit: { eles: cy.getElementById(a.value), padding: 250 },
-    duration: 3000,
-  });
-});
+const createGraph$ = getSubtree$(inputRootTopic$).pipe(
+  map((subtree) => new AdjustGraph(subtree, true))
+);
+const updateGraph$ = getSubtree$(inputNonRootTopic$(cy)).pipe(
+  map((subtree) => new AdjustGraph(subtree, false))
+);
 
-updateGraph$(cy).subscribe((evt) => {
-  const node = evt.target; 
-  if (!node) {
-    console.warn("Cytoscape event has no target", evt);
-    return;
+inputNonRootTopic$(cy).subscribe(console.log)
+
+const actions$ = merge(createGraph$, updateGraph$);
+
+const state$ = actions$.pipe(
+  scan((currState: State, action: Action) => action.apply(currState), {
+    graphEnter: null,
+    flagClearGraph: false,
+  })
+);
+
+state$.subscribe((s: State) => {
+  if (s.flagClearGraph) {
+    cy.elements().remove();
   }
-  console.log("Node clicked:", node.id());
+
+  if (s.graphEnter) {
+    cy.add(parseRootTreeNodeAsCy(s.graphEnter));
+    const layout = cy.layout(LAYOUT_PARAMS);
+    layout.run();
+
+    cy.animate({
+      fit: { eles: cy.getElementById(s.graphEnter.value), padding: 250 },
+      duration: 3000,
+    });
+  }
 });
