@@ -5,10 +5,14 @@
 - Install [Node.js](https://nodejs.org/en/download)
 - Run `npm install`
 
-
 ### Dependencies
-- Wikipedia API endpoints remain functional and do not change their JSON response structure
-- The frontend diretly interacts with the Wikipedia API `https://en.wikipedia.org/w/api.php?action=query&format=json&title...` as opposed to through a middleman server
+- Code relies on Wikipedia API endpoints
+- Will stop working if API/response structure change
+
+### Notes
+- No backend server middleman
+- All requests are done in the browser through Wikipedia API
+    - This is fine for now as most public API's and Wikipedia's API allow CORS
 
 ### Inspect code
 - in the root directory
