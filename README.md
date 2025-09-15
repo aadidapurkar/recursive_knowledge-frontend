@@ -1,21 +1,27 @@
-# Frontend Website for Recursive Knowledge Project
+# Website for Lazily Explored Wikipedia Topics
+User directed wikipedia depth search, starting at some root topic
 
 ### Prerequisites
-Install [Node.js](https://nodejs.org/en/download)
+- Install [Node.js](https://nodejs.org/en/download)
+- Run `npm install`
 
 
-Run `npm install`
-
+### Dependencies
+- Wikipedia API endpoints remain functional and do not change their JSON response structure
+- The frontend diretly interacts with the Wikipedia API `https://en.wikipedia.org/w/api.php?action=query&format=json&title...` as opposed to through a middleman server
 
 ### Inspect code
 - in the root directory
     - `index.html`
 - in the src directory
     - typescript
-        - `main.ts`
-        - `observable.ts`
+        - `main.ts` - master MVC logic
+        - `observable.ts` - user input / web request streams
         - `types.ts`
-        - `util.ts`
+        - `state.ts` - define actions which define reductions from oldState -> newState 
+        - `util.ts` -
+        - `render.ts` - define how a state should look in the view
+
     - css
         - `style.css`
 

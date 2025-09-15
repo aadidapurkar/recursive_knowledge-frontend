@@ -1,84 +1,109 @@
 import {
-  catchError,
-  from,
   fromEvent,
-  fromEventPattern,
   map,
-  Observable,
   switchMap,
+  Observable,
+  of,
+  catchError,
+  filter,
 } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
-import { DEFAULT_BRANCHING_FACTOR, type TreeNode } from "./types";
+import { getUrlWikiTopicQueryApi, jsonParser } from "./util";
+import type { WikiSearchResponse, Topic, WikiLinksResponse } from "./types";
+import { AddTopic, CurrTopicIdxChange, RootTopic } from "./state";
 
-// Generic POST request function returning an Observable
-export const postRequest = <T>(url: string, body: any): Observable<T> => {
-  return fromFetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  }).pipe(
+// HTML elements
+const inputTopic = document.getElementById("inputTopic")! as HTMLInputElement;
+const topicText = document.getElementsByClassName("topicText")[0]!;
+const btnExploreTopic = document.getElementById(
+  "btnExploreTopic"
+)! as HTMLButtonElement;
+const btnBack = document.getElementById(
+  "btnBack"
+)! as HTMLButtonElement;
+const btnFwd = document.getElementById(
+  "btnForward"
+)! as HTMLButtonElement;
+const subtopicContainer = document.getElementById("subtopicContainer")!;
+
+// Go back a topic
+export const decrementTopic$ = fromEvent<MouseEvent>(btnBack, "click").pipe(
+  map(_ => new CurrTopicIdxChange(-1))
+)
+
+// Go forward a topic
+export const incrementTopic$ = fromEvent<MouseEvent>(btnFwd, "click").pipe(
+  map(_ => new CurrTopicIdxChange(1))
+)
+
+// For any subtree subtopic of root, explore the subtopic rightward
+export const exploreSubtopic$ = fromEvent<MouseEvent>(subtopicContainer, "click").pipe(
+  filter(
+    (event) => (event.target as HTMLElement).tagName.toLowerCase() === "p"
+  ),
+  map((event: any) => event.target.textContent as string),
+  map((subtopic: string) => [topicText.id, subtopic]),
+  switchMap(([topicIdx, topicName]) =>
+    getSubtopics$(topicName).pipe(
+      map(
+        (subtopics) =>
+          [parseInt(topicIdx), {
+            title: topicName,
+            subtopics: subtopics,
+          } as Topic] as [number, Topic]
+      )
+    )
+  ),
+  map( ([i, t]) => new AddTopic(t, i) )
+);
+
+// Initiate the root topic
+export const newTopic$ = fromEvent(btnExploreTopic, "click").pipe(
+  map((_) => inputTopic.value),
+  switchMap((topic) =>
+    getRequest$<WikiSearchResponse>(getUrlWikiTopicQueryApi(topic), jsonParser)
+  ),
+  map((res) => res.query.search[0].title),
+  switchMap((title) =>
+    getSubtopics$(title).pipe(
+      map(
+        (subtopics) =>
+          ({
+            title: title,
+            subtopics: subtopics,
+          } as Topic)
+      )
+    )
+  ),
+  map((topic: Topic) => new RootTopic(topic))
+);
+
+export const getSubtopics$ = (topic: string) =>
+  getRequest$<WikiLinksResponse>(
+    `https://en.wikipedia.org/w/api.php?action=query&format=json&titles=${topic}&prop=links&pllimit=max&origin=*`,
+    jsonParser
+  ).pipe(
+    map((res) => {
+      const pages = res.query.pages;
+      const page = pages[Object.keys(pages)[0]];
+      return page.links?.map((link: { title: any }) => link.title) ?? [];
+    })
+  );
+
+export const getRequest$ = <T>(
+  url: string,
+  parser: (res: Response) => Promise<T>
+): Observable<T> =>
+  fromFetch(url).pipe(
     switchMap((response) => {
       if (response.ok) {
-        return from(response.json() as Promise<T>);
+        return parser(response) as Promise<T>;
       } else {
-        // handle HTTP errors
-        return from([null as unknown as T]);
+        return of({ error: true, message: `Error ${response.status}` } as T);
       }
     }),
     catchError((err) => {
-      console.error("Request failed", err);
-      return from([null as unknown as T]); // return fallback value
-    })
-  );
-};
-
-/**
- * Input: Topic
- * Mapping: Topic -> Topic + Sorted Subtopics -> Graph/Tree of depth 1
- */
-const inputTopic = document.getElementById("inputTopic") as HTMLInputElement;
-const btnExploreTopic = document.getElementById(
-  "btnExploreTopic"
-) as HTMLButtonElement;
-
-export const inputRootTopic$ = fromEvent(btnExploreTopic!, "click").pipe(
-  map(() => inputTopic!.value)
-);
-export const inputNonRootTopic$: (cy: cytoscape.Core) => Observable<string> = (cy) =>
-  fromEventPattern(
-    (handler) => cy.on("tap", "node", handler),
-    (handler) => cy.off("tap", "node", handler)
-  ).pipe(
-    map((evtOrArgs: any) => {
-      // evtOrArgs might be an event object OR an array like [event, undefined]
-      const evt = Array.isArray(evtOrArgs) ? evtOrArgs[0] : evtOrArgs;
-      const node = evt?.target ?? evt; // sometimes the element itself might be passed
-      return node && typeof node.id === "function" ? node.id() : "test";
-    })
-  );
-
-
-export const getSubtree$ = (o$: Observable<any>) =>
-  o$.pipe(
-    switchMap(
-      (topic: string) =>
-        postRequest<string[]>("http://localhost:3000/api/rankConcepts", {
-          parent: topic,
-        }) //.pipe(map((res) => [topic, res]))
-    ),
-    map((a) => {
-      const childrenTreeNodes = a.slice(1).map(([topicName, topicLink], i) => {
-        return {
-          value: topicName,
-          url: topicLink,
-          displayBranchingFactor: DEFAULT_BRANCHING_FACTOR,
-        } as TreeNode;
-      });
-      return {
-        value: a[0][0],
-        url: a[0][1],
-        displayBranchingFactor: DEFAULT_BRANCHING_FACTOR,
-        children: childrenTreeNodes,
-      } as TreeNode;
+      console.error(err);
+      return of({ error: true, message: err.message } as T);
     })
   );

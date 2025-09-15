@@ -1,34 +1,47 @@
-// Constants
-export const DEFAULT_BRANCHING_FACTOR = 4
-
-// Types
-export type State = {
-    graphEnter: TreeNode | null;
-    flagClearGraph: boolean
-}
-
+// All observables will map to an object of a class which have an apply method, mapping a reduced state to a new state
 export interface Action {
   apply(s: State): State;
 }
 
-export type TreeNode = {
-    value: string,
-    url: string,
-    displayBranchingFactor: number,
-    children?: TreeNode[]
+// State types
+export type Topic = {
+  title: string,
+  subtopics: string[]
+}
+export type State = {
+  currTopic?: number;
+  topics : Topic[]
+
 }
 
-export const LAYOUT_PARAMS = {
-    name: "breadthfirst",
-    directed: true,
-    // spacingFactor < 1 makes nodes closer together; tweak between 0.5 - 1.2
-    spacingFactor: 0.75,
-    fit: true, // fit to viewport after layout
-    padding: 20,
-    avoidOverlap: true,
-    nodeDimensionsIncludeLabels: true, // important: layout accounts for label size
-    transform: (node: any, pos: { x: number; y: number }) => ({
-      x: pos.x * 1.5, // horizontal spacing
-      y: pos.y * 0.8, // vertical spacing
-    }),
-  }
+// Web request types (Wikipedia API)
+export type WikiSearchResponse = {
+  batchcomplete: string;
+  continue: {
+    sroffset: number;
+    continue: string;
+  };
+  query: {
+    searchinfo: {
+      totalhits: number;
+    };
+    search: {
+      ns: number;
+      title: string;
+      pageid: number;
+      snippet: string;
+    }[];
+  };
+};
+
+export type WikiLinksResponse = {
+  query: {
+    pages: {
+      [pageid: string]: {
+        pageid: number;
+        title: string;
+        links?: { ns: number; title: string }[];
+      };
+    };
+  };
+};
