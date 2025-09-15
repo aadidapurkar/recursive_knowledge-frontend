@@ -1,5 +1,5 @@
 # Website for Lazily Explored Wikipedia Topics
-User directed wikipedia depth search, starting at some root topic
+'Lazy DFS' style wikipedia exploration, starting at some root topic
 
 ### Prerequisites
 - Install [Node.js](https://nodejs.org/en/download)
