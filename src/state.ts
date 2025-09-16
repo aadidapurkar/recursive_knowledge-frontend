@@ -3,8 +3,20 @@ import type { Action, State, SubtopicPref, Topic } from "./types";
 // Initial state: no current topic, and no known topics
 export const initialState: State = {
   topics: [],
-  pref: "alphabetical"
+  pref: "default",
+  limit: 100
 };
+
+
+export class ChangeSubtopicLimit implements Action {
+  constructor(public readonly limit: number) {}
+  apply(s: State): State {
+    return {
+      ...s,
+      limit: this.limit
+  }
+}
+}
 
 export class ChangeSubtopicPref implements Action {
   constructor(public readonly pref: SubtopicPref) {}

@@ -102,4 +102,9 @@ p {
 
 #selectSubtopicOrder {
   margin-left: 5px;
+  margin-right: 5px;
+}
+
+#inputSubtopicLimit {
+  margin-left: 5px;
 }

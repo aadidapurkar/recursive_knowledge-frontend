@@ -14,7 +14,7 @@ import {
   scan,
   switchMap,
 } from "rxjs";
-import { decrementTopic$, incrementTopic$, newTopic$, exploreSubtopic$ } from "./observable";
+import { decrementTopic$, incrementTopic$, newTopic$, exploreSubtopic$, changeSubtopicOrdering$, changeSubtopicLimit$ } from "./observable";
 import { initialState } from "./state";
 import type { Action, State, Topic } from "./types";
 import { render } from "./render";
@@ -28,7 +28,7 @@ const btnExploreTopic = document.getElementById(
 
 // MVC -----------------------------------------------------------------------------
 // (CONTROLLER) Merged stream of controller observables, mapped to Actions
-const action$ = merge(newTopic$, exploreSubtopic$, decrementTopic$, incrementTopic$)
+const action$ = merge(newTopic$, exploreSubtopic$, decrementTopic$, incrementTopic$, changeSubtopicOrdering$, changeSubtopicLimit$)
 
 // (MODEL) Reduced stream of State 
 const state$ = action$.pipe(
@@ -46,7 +46,7 @@ fromEvent(btnExploreTopic, "click").subscribe((_) => {
 })
 
 // (DEBUG) Log state 
-// state$.subscribe(console.log)
+state$.subscribe(console.log)
 
 
 

@@ -10,7 +10,7 @@ import {
 import { fromFetch } from "rxjs/fetch";
 import { getUrlWikiTopicQueryApi, jsonParser } from "./util";
 import { type WikiSearchResponse, type Topic, type WikiLinksResponse, PREFS_ARR, type SubtopicPref } from "./types";
-import { AddTopic, ChangeSubtopicPref, CurrTopicIdxChange, RootTopic } from "./state";
+import { AddTopic, ChangeSubtopicLimit, ChangeSubtopicPref, CurrTopicIdxChange, RootTopic } from "./state";
 
 // HTML elements
 const inputTopic = document.getElementById("inputTopic")! as HTMLInputElement;
@@ -25,8 +25,15 @@ const btnFwd = document.getElementById(
   "btnForward"
 )! as HTMLButtonElement;
 const subtopicContainer = document.getElementById("subtopicContainer")!;
-  const selectOrder = document.getElementById("order")! as HTMLSelectElement
+const selectOrder = document.getElementById("order")! as HTMLSelectElement
+const inputLimit = document.getElementById("inputSubtopicLimit")! as HTMLInputElement
 
+// Change amount of shown subtopics
+export const changeSubtopicLimit$ = fromEvent<MouseEvent>(inputLimit, "input").pipe(
+  map(_ => {
+    const limit : number = parseInt(inputLimit.value)
+    return limit > 0 ? new ChangeSubtopicLimit(limit) : new ChangeSubtopicLimit(100)
+  }))
 
 // Change subtopic ordering
 export const changeSubtopicOrdering$ = fromEvent<MouseEvent>(selectOrder, "change").pipe(
