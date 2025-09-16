@@ -90,3 +90,16 @@ p {
   text-align: center;
   visibility: hidden;
 }
+
+#order {
+  display: flex;
+  margin: 1rem auto 0 auto;
+  justify-content: center; /* centers vertically if container has height */
+  align-items: center;     /* centers horizontally */
+  visibility: hidden;
+}
+
+
+#selectSubtopicOrder {
+  margin-left: 5px;
+}

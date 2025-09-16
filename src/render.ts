@@ -9,12 +9,14 @@ export const render = (s : State) => {
   const topicText = document.getElementsByClassName("topicText")[0]!
   const stps = document.getElementById("stps")! 
   const stepsText = document.getElementById("stepsAway")! 
+  const selectOrder = document.getElementById("order")!
 
   const topicChangeRequired : boolean = s.currTopic !== undefined && s.currTopic >= 0 && s.currTopic <= s.topics.length - 1 //&& s.currTopic != parseInt(topicText.id)
 
   if (s.currTopic !== undefined) {
     topicContainer.style.visibility = "visible"
     stps.style.visibility = "visible"
+    selectOrder.style.visibility = "visible"
   }
   // heading
   if(topicChangeRequired) {
@@ -27,7 +29,7 @@ export const render = (s : State) => {
   if (topicChangeRequired) {
     subtopicContainer.innerHTML = '';
     const topic : Topic =  s.topics[s.currTopic!]
-    const shuffledTopics = shuffleArray<string>(topic.subtopics)
+    const shuffledTopics = s.pref === "random" ?  shuffleArray<string>(topic.subtopics) : topic.subtopics
     const subtopicElems = shuffledTopics.map((subtopic : string) => {
       const p = document.createElement('p');
       p.id = subtopic

@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wiki Explore</title>
     <link rel="stylesheet" href="src/style.css" />
-    <link rel="icon" type="image/x-icon" href="/public/favicon.png">
+    <link rel="icon" type="image/x-icon" href="/public/favicon.png" />
   </head>
   <body>
     <div class="container">
-      <input
-        type="text"
-        id="inputTopic"
-        placeholder="Enter root topic..."
-      />
+      <input type="text" id="inputTopic" placeholder="Enter root topic..." />
       <button type="submit" id="btnExploreTopic">Explore topic!</button>
     </div>
-    <h4 id="stps"><span id="stepsAway"></span> steps away from root. </h4>
+
+    <div id="order">
+      <span>Subtopic ordering preference</span>
+      <select id="selectSubtopicOrder">
+        <option value="alphabetical">Alphabetical</option>
+        <option value="random">Random</option>
+        <option value="ai-relevant">Sorted by Relevancy With AI</option>
+      </select>
+    </div>
+
+    <h4 id="stps"><span id="stepsAway"></span> steps away from root.</h4>
     <div id="topicContainer">
       <button id="btnBack">Back</button>
       <h1 class="topicText"></h1>
       <button id="btnForward">Forward</button>
     </div>
-        <div id="subtopicContainer">
-    </div>
+    <div id="subtopicContainer"></div>
 
     <script type="module" src="src/main.ts"></script>
   </body>

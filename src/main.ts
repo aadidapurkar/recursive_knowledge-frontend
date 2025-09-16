@@ -1,3 +1,4 @@
+// IMPORTS -----------------------------------------------------------------------------
 import { fromFetch } from "rxjs/fetch";
 import "./style.css";
 import {
@@ -18,13 +19,14 @@ import { initialState } from "./state";
 import type { Action, State, Topic } from "./types";
 import { render } from "./render";
 
-// HTML Elements
+// HTML elem -----------------------------------------------------------------------------
 const inputTopic = document.getElementById("inputTopic")! as HTMLInputElement;
 const topicText = document.getElementsByClassName("topicText")[0]!;
 const btnExploreTopic = document.getElementById(
   "btnExploreTopic"
 )! as HTMLButtonElement;
 
+// MVC -----------------------------------------------------------------------------
 // (CONTROLLER) Merged stream of controller observables, mapped to Actions
 const action$ = merge(newTopic$, exploreSubtopic$, decrementTopic$, incrementTopic$)
 
@@ -37,8 +39,14 @@ const state$ = action$.pipe(
 state$.subscribe((s) => render(s))
 
 
+// MISC ----------------------------------------------------------------------
+// Clear topic input after submitting
 fromEvent(btnExploreTopic, "click").subscribe((_) => {
   inputTopic.value = ""
 })
+
+// (DEBUG) Log state 
+// state$.subscribe(console.log)
+
 
 

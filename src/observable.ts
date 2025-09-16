@@ -9,8 +9,8 @@ import {
 } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
 import { getUrlWikiTopicQueryApi, jsonParser } from "./util";
-import type { WikiSearchResponse, Topic, WikiLinksResponse } from "./types";
-import { AddTopic, CurrTopicIdxChange, RootTopic } from "./state";
+import { type WikiSearchResponse, type Topic, type WikiLinksResponse, PREFS_ARR, type SubtopicPref } from "./types";
+import { AddTopic, ChangeSubtopicPref, CurrTopicIdxChange, RootTopic } from "./state";
 
 // HTML elements
 const inputTopic = document.getElementById("inputTopic")! as HTMLInputElement;
@@ -25,6 +25,17 @@ const btnFwd = document.getElementById(
   "btnForward"
 )! as HTMLButtonElement;
 const subtopicContainer = document.getElementById("subtopicContainer")!;
+  const selectOrder = document.getElementById("order")! as HTMLSelectElement
+
+
+// Change subtopic ordering
+export const changeSubtopicOrdering$ = fromEvent<MouseEvent>(selectOrder, "change").pipe(
+  map(_ => {
+    const pref : string = selectOrder.value
+    return PREFS_ARR.includes(pref) ? new ChangeSubtopicPref(pref as SubtopicPref) : new ChangeSubtopicPref(PREFS_ARR[0] as SubtopicPref)
+  })
+)
+
 
 // Go back a topic
 export const decrementTopic$ = fromEvent<MouseEvent>(btnBack, "click").pipe(

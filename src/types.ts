@@ -4,6 +4,9 @@ export interface Action {
 }
 
 // State types
+export const PREFS_ARR = ["random", "alphabetical", "ai-relevant"]
+export type SubtopicPref = "random" | "alphabetical" | "ai-relevant"
+
 export type Topic = {
   title: string,
   subtopics: string[]
@@ -11,6 +14,7 @@ export type Topic = {
 export type State = {
   currTopic?: number;
   topics : Topic[]
+  pref: SubtopicPref
 
 }
 

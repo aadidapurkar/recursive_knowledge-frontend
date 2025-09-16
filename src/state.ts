@@ -1,15 +1,28 @@
-import type { Action, State, Topic } from "./types";
+import type { Action, State, SubtopicPref, Topic } from "./types";
 
 // Initial state: no current topic, and no known topics
 export const initialState: State = {
   topics: [],
+  pref: "alphabetical"
 };
+
+export class ChangeSubtopicPref implements Action {
+  constructor(public readonly pref: SubtopicPref) {}
+  apply(s: State): State {
+    return {
+      ...s,
+      pref: this.pref
+    };
+  }
+}
+
 
 // Set current topic index to 0, and set known topics to just the root
 export class RootTopic implements Action {
   constructor(public readonly rootTopic: Topic) {}
   apply(s: State): State {
     return {
+      ...s,
       currTopic: 0,
       topics: [this.rootTopic],
     };
@@ -24,6 +37,7 @@ export class AddTopic implements Action {
   ) {}
   apply(s: State): State {
     return {
+      ...s,
       currTopic: this.currTopicIndex + 1,
       topics: s.topics.slice(0, this.currTopicIndex + 1).concat(this.newTopic),
     };
