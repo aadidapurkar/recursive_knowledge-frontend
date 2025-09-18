@@ -78,6 +78,11 @@ p {
   animation: wobble 10s infinite ease-in-out; 
 }
 
+p:hover {
+  background-color: black;
+  color:white;
+}
+
 #stps {
   text-align: center;
   visibility: hidden;
