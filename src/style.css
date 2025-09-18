@@ -62,19 +62,12 @@
 }
 
 
-/* Shake animation */
-@keyframes shake {
-  0%   { transform: translate(0, 0); }
-  10%  { transform: translate(-1px, -1px); }
-  20%  { transform: translate(1px, 1px); }
-  30%  { transform: translate(-1px, 1px); }
-  40%  { transform: translate(1px, -1px); }
-  50%  { transform: translate(-1px, 0); }
-  60%  { transform: translate(1px, 1px); }
-  70%  { transform: translate(-1px, -1px); }
-  80%  { transform: translate(1px, 1px); }
-  90%  { transform: translate(1px, -1px); }
-  100% { transform: translate(0, 0); }
+@keyframes wobble {
+  0%   { transform: rotate(0deg) scale(1); }
+  25%  { transform: rotate(-1deg) scale(1.01); }
+  50%  { transform: rotate(1deg) scale(0.99); }
+  75%  { transform: rotate(-0.5deg) scale(1.005); }
+  100% { transform: rotate(0deg) scale(1); }
 }
 
 p {   
@@ -82,7 +75,7 @@ p {
   width: fit-content;
   padding: 5px;
   border: 1px solid black;
-  animation: shake 5s infinite; 
+  animation: wobble 10s infinite ease-in-out; 
 }
 
 #stps {

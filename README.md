@@ -9,6 +9,18 @@
 - Code relies on Wikipedia API endpoints
 - Will stop working if API/response structure change
 
+### Run
+- To update changes live
+    - `npm run dev`
+- To compile into Vanilla HTML/CSS/JS
+    - Check prop `base` in in `vite.config.ts` is `./`
+    - Run `npm run build`
+    - Run `npx serve dist`
+- Update gh-pages branch for deployment
+    - Check prop `base` in in `vite.config.ts` is `/wikipedia-explore` / the name of the repo
+    - Run `npm run deploy`
+
+
 ### Notes
 - No backend server middleman
 - All requests are done in the browser through Wikipedia API
@@ -29,7 +41,5 @@
     - css
         - `style.css`
 
-### Run website
-- To run live server `npm run dev`
-- To compile into vanilla html/css/js with `npm run build`, open `dist/index.html`
+
 
