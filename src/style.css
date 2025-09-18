@@ -10,10 +10,6 @@
   margin-left: 0.5rem;
 }
 
-#btnExploreTopic:hover {
-  background-color: black;
-  color: white;
-}
 
 #inputTopic {
   width: 50%;
@@ -81,6 +77,7 @@ p {
 p:hover {
   background-color: black;
   color:white;
+  cursor: pointer;
 }
 
 #stps {
@@ -90,9 +87,8 @@ p:hover {
 
 #order {
   display: flex;
-  margin: 1rem auto 0 auto;
-  justify-content: center; /* centers vertically if container has height */
-  align-items: center;     /* centers horizontally */
+  justify-content: center;
+  margin-top: 5px;
   visibility: hidden;
 }
 
@@ -103,5 +99,17 @@ p:hover {
 }
 
 #inputSubtopicLimit {
-  margin-left: 5px;
+  margin-left: 1rem;
+  margin-right: 5px;
+}
+
+button {
+  background-color: black;
+  color: white;
+}
+
+button:hover {
+  background-color: orange;
+  color: black;
+  cursor: pointer;
 }
