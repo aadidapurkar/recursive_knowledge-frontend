@@ -4,8 +4,8 @@ export interface Action {
 }
 
 // State types
-export const PREFS_ARR = ["random", "default", "ai-relevant"]
-export type SubtopicPref = "random" | "default" | "ai-relevant"
+export const PREFS_ARR = ["random", "default"]
+export type SubtopicPref = "random" | "default"
 
 export type Topic = {
   title: string,
