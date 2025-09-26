@@ -1,7 +1,3 @@
-done: 
-detected clicks from existing nodes
-
 todo:
-filter for non roots
-send post request to server update children of that node
-get response and update graph
+ai relevancy gemini flash api
+ui - user clicks enter key -> explore-topic clicked
